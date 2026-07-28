@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kshitij Mishra — Systems + ML</title>
+  <meta name="description"
+    content="Kshitij Mishra — systems-focused developer working at the intersection of low-level infrastructure and machine learning." />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f3efe4;
+      --paper-dim: #ece6d6;
+      --ink: #1a1a1a;
+      --fade: #6b6a63;
+      --signal: #c1440e;
+      --hair: rgba(26, 26, 26, 0.12);
+      --hair-strong: rgba(26, 26, 26, 0.22);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    html,
+    body {
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    body {
+      font-family: 'Space Mono', monospace;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    ::selection {
+      background: var(--signal);
+      color: var(--paper);
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 4vw, 3rem);
+    }
+
+    /* ---------- nav ---------- */
+    nav.site {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.1rem clamp(1.25rem, 4vw, 3rem);
+      background: rgba(243, 239, 228, 0.86);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--hair);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+    }
+
+    .mark {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mark .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--signal);
+      display: inline-block;
+    }
+
+    .navlinks {
+      display: flex;
+      gap: 1.75rem;
+    }
+
+    .navlinks a {
+      text-decoration: none;
+      color: var(--fade);
+      transition: color 0.2s;
+    }
+
+    .navlinks a:hover {
+      color: var(--signal);
+    }
+
+    /* ---------- hero ---------- */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #sketch-holder {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* Four-corner chrome — clear the fixed nav (≈56px) with padding-top */
+    .hero-top-left {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      padding: 4.5rem clamp(1.5rem, 5vw, 4rem) 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .hero-top-right {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      padding: 4.5rem clamp(1.5rem, 5vw, 4rem) 2rem;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.55rem;
+    }
+
+    .hero-bottom-left {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
+      padding: 2rem clamp(1.5rem, 5vw, 4rem) 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .hero-bottom-right {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: 1;
+      padding: 2rem clamp(1.5rem, 5vw, 4rem) 2.5rem;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.55rem;
+    }
+
+    .hero-name {
+      font-family: 'Newsreader', serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .hero-role {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      color: var(--signal);
+      margin-top: 0.2rem;
+    }
+
+    .hero-meta {
+      font-size: 0.78rem;
+      letter-spacing: 0.07em;
+      color: var(--fade);
+      line-height: 1.7;
+    }
+
+    .hero-meta span.on {
+      color: var(--signal);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+    }
+
+    .hero-caption {
+      font-size: 0.82rem;
+      color: var(--fade);
+      letter-spacing: 0.02em;
+      max-width: 26ch;
+      line-height: 1.75;
+      text-align: right;
+    }
+
+    .hero-caption em {
+      font-style: normal;
+      color: var(--ink);
+      font-size: 0.88rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      align-items: flex-start;
+    }
+
+    .btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      padding: 0.85rem 1.5rem;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      background: rgba(243, 239, 228, 0.88);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .btn.solid {
+      border-color: var(--signal);
+      color: var(--paper);
+      background: rgba(193, 68, 14, 0.92);
+    }
+
+    .btn.solid:hover {
+      opacity: 0.9;
+      background: rgba(193, 68, 14, 0.92);
+    }
+
+    .readout {
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: var(--fade);
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--hair);
+      padding-bottom: 1rem;
+      margin-top: 3.25rem;
+    }
+
+    .readout span.on {
+      color: var(--signal);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-strip {
+      font-size: 0.7rem;
+      color: var(--fade);
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--hair);
+      padding-top: 1rem;
+    }
+
+    .footer-strip a {
+      text-decoration: none;
+    }
+
+    .footer-strip a:hover {
+      color: var(--signal);
+    }
+
+    /* ---------- section scaffolding ---------- */
+    section {
+      position: relative;
+      padding: 6rem 0;
+    }
+
+    section+section {
+      border-top: 1px solid var(--hair);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+
+    .section-head .eyebrow {
+      margin-bottom: 0;
+    }
+
+    .section-head h2 {
+      font-family: 'Newsreader', serif;
+      font-weight: 600;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+    }
+
+    .section-head h2 em {
+      font-style: italic;
+      color: var(--signal);
+    }
+
+    /* ---------- about ---------- */
+    #about .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3.5rem;
+    }
+
+    #about p.bio {
+      font-size: 0.98rem;
+      line-height: 1.85;
+      color: var(--fade);
+      max-width: 60ch;
+    }
+
+    #about p.bio b {
+      color: var(--ink);
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .stat-num {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-size: 2.75rem;
+      color: var(--signal);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: var(--fade);
+      margin-top: 0.35rem;
+    }
+
+    .log {
+      border-left: 1px solid var(--hair-strong);
+      padding-left: 1.75rem;
+    }
+
+    .log-item {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .log-item::before {
+      content: '';
+      position: absolute;
+      left: -1.95rem;
+      top: 0.35rem;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--signal);
+    }
+
+    .log-time {
+      font-size: 0.72rem;
+      color: var(--signal);
+      letter-spacing: 0.06em;
+    }
+
+    .log-role {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      margin-top: 0.35rem;
+    }
+
+    .log-org {
+      font-size: 0.78rem;
+      color: var(--fade);
+      margin-top: 0.2rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ---------- currently ---------- */
+    .focus-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--hair-strong);
+    }
+
+    .focus-col {
+      padding: 2.5rem 2.25rem;
+      position: relative;
+    }
+
+    .focus-col+.focus-col {
+      border-left: 1px solid var(--hair-strong);
+    }
+
+    .focus-num {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-size: 3.5rem;
+      color: var(--paper-dim);
+      line-height: 1;
+      margin-bottom: 1rem;
+      user-select: none;
+    }
+
+    .focus-col h3 {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-size: 1.45rem;
+      color: var(--ink);
+      margin-bottom: 0.85rem;
+    }
+
+    .focus-col p {
+      font-size: 0.84rem;
+      line-height: 1.75;
+      color: var(--fade);
+    }
+
+    .focus-col p b {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    @media (max-width:800px) {
+      #about .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .focus-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .focus-col+.focus-col {
+        border-left: none;
+        border-top: 1px solid var(--hair-strong);
+      }
+    }
+
+    /* ---------- projects ---------- */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--hair-strong);
+      border: 1px solid var(--hair-strong);
+    }
+
+    .proj-card {
+      background: var(--paper);
+      cursor: pointer;
+      min-height: 290px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .proj-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.45;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .proj-card:hover .proj-bg {
+      opacity: 1;
+    }
+
+    .proj-inner {
+      position: relative;
+      z-index: 1;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 290px;
+    }
+
+    .proj-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .proj-hash {
+      font-size: 0.7rem;
+      color: var(--signal);
+      letter-spacing: 0.04em;
+    }
+
+    .proj-algo {
+      font-size: 0.6rem;
+      color: var(--fade);
+      letter-spacing: 0.09em;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .proj-name {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-size: 1.55rem;
+      margin-top: 0.9rem;
+      line-height: 1.15;
+    }
+
+    .proj-desc {
+      font-size: 0.78rem;
+      color: var(--fade);
+      line-height: 1.6;
+      margin-top: 0.85rem;
+    }
+
+    .proj-tags {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+
+    .proj-tags span {
+      font-size: 0.66rem;
+      color: var(--fade);
+      border: 1px solid var(--hair-strong);
+      padding: 0.2rem 0.5rem;
+      background: rgba(243, 239, 228, 0.72);
+    }
+
+    .proj-open {
+      font-size: 0.72rem;
+      color: var(--ink);
+      margin-top: 1.25rem;
+      letter-spacing: 0.03em;
+    }
+
+    .proj-open::after {
+      content: ' →';
+    }
+
+    .proj-status {
+      display: inline-block;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      border: 1px solid var(--signal);
+      color: var(--signal);
+      padding: 0.15rem 0.45rem;
+      margin-top: 0.6rem;
+      background: rgba(243, 239, 228, 0.72);
+    }
+
+    /* ---------- contact ---------- */
+    .contact-block {
+      display: block;
+      border: 1px solid var(--hair-strong);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1rem;
+      text-decoration: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .contact-block:hover {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    .contact-label {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+    }
+
+    .contact-val {
+      font-size: 0.8rem;
+      color: var(--fade);
+    }
+
+    .contact-block:hover .contact-val {
+      color: var(--paper-dim);
+    }
+
+    /* ---------- footer ---------- */
+    footer {
+      padding: 3rem 0 2.5rem;
+      font-size: 0.72rem;
+      color: var(--fade);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-top: 1px solid var(--hair);
+    }
+
+    footer a {
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--signal);
+    }
+
+    /* ---------- modal ---------- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 26, 0.55);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--paper);
+      border: 1px solid var(--ink);
+      max-width: 640px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(24px);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .modal-overlay.active .modal-box {
+      transform: translateY(0);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 38px;
+      height: 38px;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--signal);
+    }
+
+    .modal-header {
+      padding: 2.25rem 2.25rem 1.5rem;
+      border-bottom: 1px solid var(--hair-strong);
+    }
+
+    .modal-hash {
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+    }
+
+    .modal-name {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-weight: 600;
+      font-size: 2.4rem;
+      line-height: 1.05;
+      margin-top: 0.5rem;
+    }
+
+    .modal-tagline {
+      font-size: 0.82rem;
+      margin-top: 0.9rem;
+      line-height: 1.6;
+      color: var(--fade);
+    }
+
+    .modal-body {
+      padding: 1.5rem 2.25rem 2.25rem;
+    }
+
+    .modal-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-section-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+      color: var(--fade);
+      text-transform: uppercase;
+    }
+
+    .modal-list {
+      list-style: none;
+    }
+
+    .modal-list li {
+      font-size: 0.82rem;
+      margin-bottom: 0.6rem;
+      padding-left: 1.25rem;
+      position: relative;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .modal-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--signal);
+    }
+
+    .modal-arch-box {
+      font-size: 0.76rem;
+      background: var(--paper-dim);
+      padding: 1rem;
+      border: 1px dashed var(--hair-strong);
+      line-height: 1.7;
+      word-break: break-word;
+    }
+
+    .modal-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .modal-stack-tag {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.65rem;
+      border: 1px solid var(--hair-strong);
+    }
+
+    .modal-cta {
+      display: inline-block;
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--signal);
+      text-decoration: underline;
+      margin-top: 1.25rem;
+    }
+
+    @media (max-width:640px) {
+
+      .modal-header,
+      .modal-body {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+      }
+
+      .modal-name {
+        font-size: 1.9rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="site">
+    <div class="mark"><span class="dot"></span> KM_ORBIT</div>
+    <div class="navlinks">
+      <a href="#about">ABOUT</a>
+      <a href="#projects">WORK</a>
+      <a href="#contact">CONTACT</a>
+    </div>
+  </nav>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="top">
+    <div id="sketch-holder"></div>
+
+    <!-- TOP LEFT: name + role -->
+    <div class="hero-top-left">
+      <div class="hero-name">Kshitij Mishra</div>
+      <div class="hero-role">SYSTEMS + ML · ATLANTA, GA</div>
+    </div>
+
+    <!-- TOP RIGHT: planet pair readout -->
+    <div class="hero-top-right">
+      <div class="hero-meta"><span id="param-readout" class="on">loading…</span></div>
+      <div class="hero-meta"><span id="orbit-readout">orbit 0 / 0</span></div>
+    </div>
+
+    <!-- BOTTOM LEFT: actions -->
+    <div class="hero-bottom-left">
+      <div class="hero-actions">
+        <button class="btn solid" id="reseed-btn">NEW PLANET PAIR →</button>
+        <a class="btn" href="#projects">VIEW WORK</a>
+      </div>
+    </div>
+
+    <!-- BOTTOM RIGHT: caption explaining the art -->
+    <div class="hero-bottom-right">
+      <p class="hero-caption">
+        <em>Orbital resonance.</em> Two planets orbit at different speeds.
+        A line connects their positions every few days — the period mismatch
+        draws the geometry above. Each pattern is a real solar-system pair.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">IDENTITY FILE —</div>
+        <h2>About <em>me</em></h2>
+      </div>
+      <div class="grid">
+        <div>
+          <p class="bio">
+            I build things to understand them — that's not a method, it's just
+            how I'm wired. If something is interesting enough, the only way I
+            can actually get it is to take it apart and put it back together
+            myself. That's taken me from writing low-level memory systems in Go,
+            to running controlled experiments on distributed ML schedulers, to
+            building security tools that read source code the same way an
+            attacker would. The domain changes; the instinct doesn't.
+          </p>
+          <p class="bio" style="margin-top:1.25rem;">
+            Right now I'm deep in LLMs — not the API layer, but the actual
+            internals. I'm studying how to build one from scratch: attention
+            mechanisms, tokenization, the training loop, all of it. Alongside
+            that I've been spending time on <b>inference and harness engineering</b> —
+            how you take a raw model and make it reliable, measurable, and fast
+            in production. That gap between "model works in a notebook" and
+            "model works under load" is where I want to live.
+          </p>
+          <p class="bio" style="margin-top:1.25rem;">
+            Outside of that I swim. It's the one thing that fully empties my
+            head — no tabs open, no threads running. I come back from the pool
+            and the problem I was stuck on usually solves itself.
+          </p>
+          <div class="stat-row">
+            <div>
+              <div class="stat-num">3+</div>
+              <div class="stat-label">YEARS IN PRODUCTION SYSTEMS</div>
+            </div>
+            <div>
+              <div class="stat-num">20+</div>
+              <div class="stat-label">SHIPPED DEPLOYS</div>
+            </div>
+          </div>
+        </div>
+        <div class="log">
+          <div class="log-item">
+            <div class="log-time">2025 —</div>
+            <div class="log-role">Software Engineer</div>
+            <div class="log-org">Terrace</div>
+          </div>
+          <div class="log-item">
+            <div class="log-time">2023–24</div>
+            <div class="log-role">Data Engineer</div>
+            <div class="log-org">Dept. of Physics, GSU</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CURRENTLY ================= -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">CURRENTLY —</div>
+        <h2>What I'm <em>chasing</em></h2>
+      </div>
+      <div class="focus-grid">
+        <div class="focus-col">
+          <div class="focus-num">01</div>
+          <h3>LLMs from the inside</h3>
+          <p>Not the API, the actual internals — <b>attention mechanisms,
+              tokenization, the training loop</b>. I want to understand what
+            the model is doing at every step, not just what it returns.
+            Building one from scratch is the only way I know how to do that.</p>
+        </div>
+        <div class="focus-col">
+          <div class="focus-num">02</div>
+          <h3>Inference &amp; harness engineering</h3>
+          <p>The gap between a model that works in a notebook and one that
+            works under real load. <b>Quantization, batching, latency budgets,
+              reliability under production conditions</b> — making a raw model
+            actually usable is a separate engineering problem, and it's the one
+            I find most interesting right now.</p>
+        </div>
+        <div class="focus-col">
+          <div class="focus-num">03</div>
+          <h3>Agentic systems that don't lie</h3>
+          <p>I've built enough agents to know where they break — <b>schema
+              drift, hallucinated tool calls, silent failure under ambiguity</b>.
+            The interesting problem is making the failure surface visible and
+            recoverable, not just throwing more context at it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROJECTS ================= -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">FIELD LOG —</div>
+        <h2>Recent <em>work</em></h2>
+      </div>
+      <div class="proj-grid" id="projGrid"></div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">TRANSMIT —</div>
+        <h2>Say <em>hello</em></h2>
+      </div>
+      <a class="contact-block" href="mailto:kshitijmishra231@gmail.com">
+        <span class="contact-label">Email</span>
+        <span class="contact-val">kshitijmishra231@gmail.com</span>
+      </a>
+      <a class="contact-block" href="https://github.com/Kshitijmishradev" target="_blank" rel="noopener">
+        <span class="contact-label">GitHub</span>
+        <span class="contact-val">github.com/Kshitijmishradev</span>
+      </a>
+      <a class="contact-block" href="https://www.linkedin.com/in/kshitijmish/" target="_blank" rel="noopener">
+        <span class="contact-label">LinkedIn</span>
+        <span class="contact-val">/in/kshitijmish</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; width:100%;">
+      <span>KSHITIJ MISHRA — BUILT WITH SEEDED RANDOMNESS.</span>
+      <span>
+        <a href="https://github.com/Kshitijmishradev" target="_blank" rel="noopener">GH</a> ·
+        <a href="https://www.linkedin.com/in/kshitijmish/" target="_blank" rel="noopener">LI</a> ·
+        <a href="mailto:kshitijmishra231@gmail.com">EM</a>
+      </span>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="projectModal">
+    <div class="modal-box" id="modalBox">
+      <button class="modal-close" id="modalClose">&#x2715;</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       ORBITAL RESONANCE SKETCH (hero background)
+       ========================================================= */
+    (function () {
+      let periodOuter, periodInner, dt, totalOrbits, t, stepsPerFrame;
+      const PALETTE = ['#1a1a1a', '#c1440e', '#3a5a7a', '#4d6b4d', '#6b3a5a'];
+
+      window.setup = function () {
+        const holder = document.getElementById('sketch-holder');
+        const cnv = createCanvas(windowWidth, windowHeight);
+        cnv.parent(holder);
+        reseed();
+        document.getElementById('reseed-btn').addEventListener('click', reseed);
+      };
+
+      function reseed() {
+        // Real solar system orbital resonance pairs.
+        // Ratio = outer period / inner period, approximated to the same precision
+        // used to draw the reference "Dances of the Planets" diagrams.
+        const PAIRS = [
+          { ratio: 2.2, outer: 'MARS', inner: 'EARTH', resonance: '2.2 : 1' },
+          { ratio: 2.6, outer: 'JUPITER', inner: 'MARS', resonance: '2.6 : 1' },
+          { ratio: 3.15, outer: 'SATURN', inner: 'JUPITER', resonance: '3.15 : 1' },
+          { ratio: 3.7, outer: 'VENUS', inner: 'MERCURY', resonance: '3.7 : 1' },
+          { ratio: 4.15, outer: 'MARS', inner: 'VENUS', resonance: '4.15 : 1' },
+          { ratio: 5.3, outer: 'JUPITER', inner: 'EARTH', resonance: '5.3 : 1' },
+        ];
+        const pair = random(PAIRS);
+        periodOuter = 220;
+        periodInner = periodOuter / pair.ratio;
+        dt = 3;
+        totalOrbits = 7;
+        t = 0;
+        stepsPerFrame = 6;
+        background(243, 239, 228);
+        document.getElementById('param-readout').textContent =
+          pair.outer + ' / ' + pair.inner + ' · ' + pair.resonance;
+        document.getElementById('orbit-readout').textContent = 'orbit 0 / ' + totalOrbits;
+      }
+
+      function updateOrbitReadout() {
+        const done = floor(t / periodOuter);
+        const pair = document.getElementById('param-readout').textContent.split(' · ')[0];
+        document.getElementById('orbit-readout').textContent =
+          'orbit ' + min(done, totalOrbits) + ' / ' + totalOrbits;
+      }
+
+      function pos(period, radius, time) {
+        const cx = width / 2, cy = height / 2;
+        const a = TWO_PI * time / period;
+        return { x: cx + radius * cos(a), y: cy + radius * sin(a) };
+      }
+
+      window.draw = function () {
+        const outerR = min(width, height) * 0.42;
+        const innerR = min(width, height) * 0.42;
+        const maxT = totalOrbits * periodOuter;
+
+        for (let s = 0; s < stepsPerFrame; s++) {
+          if (t > maxT) { break; }
+          const a = pos(periodOuter, outerR, t);
+          const b = pos(periodInner, innerR, t);
+          const orbitIdx = floor(t / periodOuter) % PALETTE.length;
+          const col = color(PALETTE[orbitIdx]);
+          stroke(red(col), green(col), blue(col), 65);
+          strokeWeight(0.6);
+          line(a.x, a.y, b.x, b.y);
+          t += dt;
+        }
+        updateOrbitReadout();
+        if (t > maxT + 40) { reseed(); }
+      };
+
+      window.windowResized = function () {
+        resizeCanvas(windowWidth, windowHeight);
+        reseed();
+      };
+    })();
+
+    /* =========================================================
+       PROJECT DATA + RENDER + MODAL
+       ========================================================= */
+    (function () {
+      function hashId(str) {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) { h = (h * 31 + str.charCodeAt(i)) >>> 0; }
+        return '#' + (h % 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+      }
+
+      const PROJECTS = [
+        {
+          key: 'fantasy', name: 'F1 Fantasy',
+          desc: 'Full-stack fantasy league for F1 fans with real-time scoring and team management.',
+          tags: ['FASTAPI', 'POSTGRESQL', 'FIREBASE'],
+          tagline: 'A full-stack fantasy league for F1 fans, with real-time scoring and team management.',
+          features: [
+            'Draft and manage your own F1 team using real driver performance data',
+            'Real-time scoring that updates as races happen',
+            'League system for competing against friends',
+            'PostgreSQL-backed persistent data with FastAPI REST endpoints'
+          ],
+          links: [{ label: 'DEMO', url: 'https://f1manager-km.firebaseapp.com/' }]
+        },
+        {
+          key: 'architect', name: 'Architect CLI',
+          desc: 'Codebase architecture maps with dependency resolution and interactive graph output.',
+          tags: ['PYTHON', 'REACT', 'TREE-SITTER'],
+          tagline: 'Interactive architecture mapping for real codebases — scan, infer dependencies, explore.',
+          features: [
+            'Scans any repository and maps file-level dependency relationships',
+            'Optional LLM-powered semantic relationship labels via Ollama',
+            'Interactive Sigma.js graph with search, filtering, and focused exploration',
+            'Risk analysis and path explanation between any two files',
+            'Persisted analysis results — scan once, explore anytime'
+          ],
+          links: [{ label: 'VIEW', url: 'https://codekshitij.github.io/Architech_CLI/' }]
+        },
+        {
+          key: 'toshi', name: 'Tōshi',
+          desc: 'Live SEC EDGAR question answering with cited risk and financial analysis.',
+          tags: ['MCP', 'CHROMADB', 'PYTHON'],
+          tagline: 'MCP server connecting Claude to SEC EDGAR — financial data, risk scoring, and RAG over 10-K filings.',
+          features: [
+            'Pull financial data directly from SEC filings — revenue, net income, cash flow, debt, EPS — up to 10 years',
+            'Anomaly detection flags unusual year-over-year changes with severity levels',
+            'Proprietary 0–10 risk score across 5 financial dimensions',
+            'RAG pipeline over 10-K filings: HyDE query expansion, MMR diverse retrieval, CRAG self-correction, cross-encoder reranking',
+            'Every answer cited with company, year, and filing section — no hallucinations'
+          ],
+          arch: 'Question → HyDE Expansion → ChromaDB Retrieval (MMR) → CRAG Self-Critique → Cross-Encoder Reranking → Claude Answers with Citations',
+          links: [{ label: 'OPEN', url: 'https://codekshitij.github.io/Toshi/' }]
+        },
+        {
+          key: 'forge', name: 'Forge',
+          desc: 'Benchmarks ML libraries in isolated containers with a high-signal terminal TUI.',
+          tags: ['DOCKER', 'PYTORCH', 'TEXTUAL'],
+          tagline: 'AI-powered ML benchmarking — describe a task in English, Forge generates code and profiles it in isolated containers.',
+          features: [
+            'Natural language task descriptions → idiomatic code for NumPy, PyTorch, TensorFlow',
+            'Isolated Docker sandbox per library — no cross-contamination',
+            'Time and memory profiling with output equivalence validation',
+            'Comparison against MLPerf and DS-1000 industry reference data',
+            'Beautiful Textual TUI for terminal-based benchmark results'
+          ],
+          links: [{ label: 'RUN', url: 'https://codekshitij.github.io/Forge_webpage/' }]
+        },
+        {
+          key: 'ghostcheck', name: 'GhostCheck',
+          desc: 'Code-aware reverse proxy with AST parsing and local LLM security audit.',
+          tags: ['GO', 'TREE-SITTER', 'OLLAMA'],
+          tagline: 'Code-aware WAF — reads the HTTP request and the source code that handles it, then asks an LLM if the payload can cause harm.',
+          features: [
+            'Wraith Proxy (Go) — zero-latency reverse proxy that clones every request without touching it',
+            'Specter Agent (Python) — heuristic scan → AST code mapping → LLM security audit',
+            'Tree-sitter extracts the exact handler function — LLM never sees your full codebase',
+            'Fail-safe: if agent or LLM is unavailable, traffic flows normally',
+            'Detects SQLi, command injection, template injection — grounded in actual code logic'
+          ],
+          arch: 'HTTP Request → Wraith Proxy (Go) → Unix Socket → Specter Agent → Tree-sitter AST Parse → Ollama LLM Audit → Verdict',
+          links: [{ label: 'CODE', url: 'https://github.com/codekshitij/GhostCheck' }]
+        },
+        {
+          key: 'guardian', name: 'Query Guardian',
+          desc: 'Natural language to SQL with query plan inspection and guarded execution.',
+          tags: ['LANGGRAPH', 'OLLAMA', 'SQLALCHEMY'],
+          tagline: 'Natural language → SQL with a safety rail — inspects query plans, optimizes risky queries, and caps execution.',
+          features: [
+            'Pruner picks relevant tables from the live catalog with schema and sample data',
+            'Draftsman turns the question into SQL via local Ollama model',
+            'Planner runs EXPLAIN and flags full table scans or missing LIMIT',
+            'Optimizer rewrites SQL and re-plans in a loop until the plan is acceptable',
+            'Executor counts rows first — large results trigger an interrupt for human export choice'
+          ],
+          arch: 'Question → Pruner → Draftsman → Planner ⇄ Optimizer (loop) → Executor → Reporter',
+          links: [{ label: 'CODE', url: 'https://github.com/codekshitij/Query-Guardian' }]
+        },
+        {
+          key: 'meridian', name: 'Meridian',
+          status: 'IN PROGRESS',
+          desc: 'Radar-scope live flight tracker for the Atlanta sector. Engineered so 500 concurrent viewers cost exactly as much as one.',
+          tags: ['TYPESCRIPT', 'REACT', 'CLOUDFLARE WORKERS', 'CANVAS'],
+          tagline: 'A live flight tracker built around one constraint: run permanently for free. The architecture decouples user count from upstream API calls entirely.',
+          features: [
+            'Five cache tiers sit between the browser and adsb.lol — 500 people watching the same airspace costs the same as one person watching',
+            'The Worker normalizes coordinates to a 2° grid before building the upstream URL, so many viewers of the same area collapse into a single cache key',
+            'Client-side dead reckoning turns a 10-second position poll into 60fps motion — one real fix produces roughly 600 rendered frames',
+            'US coastlines and state lines are baked and simplified at build time, never fetched at runtime',
+            'Controller-style scope: strip bay sorted by altitude, click any contact to follow, altitude encoded as light temperature, ATC data blocks on leaders with four-quadrant placement and declutter',
+            'Military hex detection and emergency squawk flagging surfaced directly on the scope',
+            'The upstream meter in the header exposes live cache hit rate — the architecture is visible inside the product itself',
+            'One Cloudflare Workers deployment serves both the static site and the /tile API, on the free tier with no credit card'
+          ],
+          arch: 'Browser (dead reckoning · 60fps canvas) → Edge Cache → Cloudflare Worker (2° grid normalization) → KV Fallback → adsb.lol (open, ODbL)',
+          links: []
+        },
+        {
+          key: 'agenticlab', name: 'Agentic Systems Lab',
+          desc: 'Reliable LLM agent infrastructure — schema-validated output, retry loops, and a measured ReAct planner.',
+          tags: ['PYTHON', 'PYDANTIC', 'OLLAMA'],
+          tagline: 'A shared agent core that makes local open-weight models behave predictably — measured against a live model, not a scripted demo.',
+          features: [
+            'Shared agent core enforces schema-validated LLM output via Pydantic with automatic retry-on-failure',
+            'Measured result: valid-output rate went from 46.7% baseline (single shot) to 90% with the retry loop, across a 30-task eval set',
+            'ReAct planning loop with bounded iteration and self-critique before the answer is finalized',
+            'Graceful degradation across three distinct failure modes rather than a single catch-all fallback',
+            'Provider-agnostic LLM client — same response shape whether the backend is Ollama locally or a hosted API',
+            'Built-in observability: per-call cost tracking and p50/p95 latency instrumentation across every run'
+          ],
+          arch: 'Task → Provider-agnostic LLM Client → Pydantic Schema Validation → Retry-on-Failure → ReAct Loop (plan · act · observe, bounded) → Self-Critique → Final Answer',
+          links: [{ label: 'CODE', url: 'https://github.com/Kshitijmishradev/Agentic-system-lab' }]
+        },
+        {
+          key: 'textsql', name: 'Multi-Architecture Text-to-SQL Study',
+          desc: 'Controlled comparison of three agent architectures, plus a git-style query refinement tree for human review.',
+          tags: ['PYTHON', 'SQLITE', 'OLLAMA'],
+          tagline: 'Comparative agent research — three architectures on the same natural-language-to-SQL task, with a novel human-in-the-loop review tree.',
+          features: [
+            'Ran three agent architectures against the same task over a real 25,979-match European Soccer Database: single-model baseline, multi-agent debate with critic voting, and iterative relay-refinement',
+            'Measured on a 9-question ground-truth eval set: single model 67% (6/9) at ~9.9s and ~977 tokens; debate 89% (8/9) at ~62.9s and ~5,107 tokens; relay 89% at ~74.6s and ~5,655 tokens',
+            'Quantifies the reliability-vs-cost tradeoff explicitly — roughly 6× latency and 5× token cost buys 22 points of accuracy',
+            'Git-style query refinement tree lets a reviewer inspect the full chain of model-generated queries, rewind to any prior version, and branch',
+            'Key finding: on hard multi-table joins, individual local models produced confident but wrong answers that passed naive success checks — model disagreement turned out to be the reliable trigger for human review'
+          ],
+          arch: 'Question → [Single Model | Debate + Critic Voting | Relay Refinement] → Query Version Tree (branch · rewind · inspect) → Human Review → Execution',
+          links: [{ label: 'CODE', url: 'https://github.com/Kshitijmishradev/Agentic-system-lab/tree/main/projects/Text-to-SQL' }]
+        },
+        {
+          key: 'taok8s', name: 'Tao K8s',
+          desc: '12-experiment benchmarking study of Kubernetes schedulers across distributed PyTorch ML workloads on GKE.',
+          tags: ['KUBERNETES', 'GKE', 'DOCKER', 'PYTORCH'],
+          tagline: 'Scheduler-level benchmarking on GKE — which Kubernetes scheduling policy actually serves ML workloads best, and at what cost.',
+          features: [
+            'Designed and executed a 12-experiment benchmarking study on Google Kubernetes Engine',
+            'Compared Default, Binpack, and Spread scheduling policies across PyTorch workloads: BERT, ResNet, YOLO, and DLRM',
+            'Spread scheduling improved YOLO inference latency by 54.6% over the default scheduler',
+            'Produced a cost-vs-throughput Pareto analysis to inform ML workload scheduling decisions rather than just reporting raw latency',
+            'Two-author study (with Adrit Ganeriwala), CSC4311, Spring 2026'
+          ],
+          links: [{ label: 'CODE', url: 'https://github.com/Kshitijmishradev/Tao_K8s' }]
+        },
+        {
+          key: 'graphitemem', name: 'Graphite Memory',
+          desc: 'Hybrid graph + vector memory for LLMs, exposed as an MCP server.',
+          tags: ['GO', 'MCP', 'NEO4J', 'CHROMA'],
+          tagline: 'Memory that behaves like memory, not a flat vector dump — temporal decay, scoped tenants, and graph-vector fusion, MCP-native.',
+          features: [
+            'Fuses Chroma vector search with a Neo4j property graph — items that hit both stores get a 1.5× score boost',
+            'Temporal decay ranks newer memories higher via score × e^(−λΔt), configurable by half-life',
+            'Frequency suppression backs a memory off for a few turns after it has been injected too often',
+            'Path-scoped memory (e.g. /projects/architect-cli) isolates context across projects, mountable per session',
+            'Negative weighting lets you temporarily down-rank a topic with TTL decay, without deleting it'
+          ],
+          arch: 'LLM Client (MCP) → Tool Layer (ingest/recall/forget) → Governor (parallel Chroma + Neo4j lookup, decay, suppression) → Ollama (triple extraction + embeddings)',
+          links: [{ label: 'CODE', url: 'https://github.com/Kshitijmishradev/graphite-mem' }]
+        },
+        {
+          key: 'gridlogic', name: 'GridLogic',
+          desc: 'F1 race analytics dashboard with real-time telemetry and interactive visuals.',
+          tags: ['REACT', 'FASTF1', 'PLOTLY.JS'],
+          tagline: 'F1 race analytics dashboard — real-time data processing, engineering insights, and interactive visualizations.',
+          features: [
+            'Interactive gap charts and pace analysis using high-frequency telemetry',
+            'Curated circuit maps for every Grand Prix',
+            'Real-time lap time monitoring and pit stop strategy evaluation',
+            'FastF1 integration for accurate session data',
+            'Modern dashboard with Recharts and Plotly.js visualizations'
+          ],
+          links: [{ label: 'CODE', url: 'https://github.com/codekshitij/GridLogic' }]
+        }
+      ];
+
+      // Display order — strongest / most differentiated work first.
+      // To reorder the grid later, just rearrange these keys.
+      const ORDER = [
+        'meridian',     // live, visual, best system-design story
+        'agenticlab',   // flagship: measured agent infrastructure
+        'textsql',      // most novel: comparative research + git-tree HITL
+        'graphitemem',  // distinctive: Go, MCP, graph-vector fusion
+        'taok8s',       // uncommon: real benchmarking study
+        'ghostcheck',   // distinctive security work
+        'guardian',
+        'architect',
+        'toshi',
+        'forge',
+        'gridlogic',
+        'fantasy'
+      ];
+      PROJECTS.sort((a, b) => {
+        const ai = ORDER.indexOf(a.key), bi = ORDER.indexOf(b.key);
+        return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+      });
+
+      /* ---------------------------------------------------------
+         TILING BACKGROUNDS
+         Six aperiodic / space-partitioning algorithms. Each project
+         is assigned one deterministically by hashing its key, so a
+         given project always renders the same pattern.
+         --------------------------------------------------------- */
+
+      // seeded PRNG (mulberry32) — same key always yields the same tiling
+      function seedRand(key) {
+        let a = 0;
+        for (let i = 0; i < key.length; i++) { a = (a * 131 + key.charCodeAt(i)) >>> 0; }
+        return function () {
+          a |= 0; a = (a + 0x6D2B79F5) | 0;
+          let t = Math.imul(a ^ (a >>> 15), 1 | a);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      const INK = '26,26,26';
+      const ACCENT = '193,68,14';
+
+      // --- 1. Truchet tiles: quarter arcs, random orientation per cell
+      function truchet(ctx, w, h, rnd) {
+        const s = 30;
+        ctx.lineWidth = 1;
+        for (let y = 0; y < h + s; y += s) {
+          for (let x = 0; x < w + s; x += s) {
+            ctx.strokeStyle = `rgba(${rnd() < 0.12 ? ACCENT : INK},0.3)`;
+            ctx.beginPath();
+            if (rnd() < 0.5) {
+              ctx.arc(x, y, s / 2, 0, Math.PI / 2);
+              ctx.moveTo(x + s + s / 2, y + s);
+              ctx.arc(x + s, y + s, s / 2, Math.PI, Math.PI * 1.5);
+            } else {
+              ctx.arc(x + s, y, s / 2, Math.PI / 2, Math.PI);
+              ctx.moveTo(x + s / 2, y + s);
+              ctx.arc(x, y + s, s / 2, Math.PI * 1.5, Math.PI * 2);
+            }
+            ctx.stroke();
+          }
+        }
+      }
+
+      // --- 2. Wang tiles: edge colours must match across neighbours
+      function wang(ctx, w, h, rnd) {
+        const s = 34, cols = Math.ceil(w / s) + 1, rows = Math.ceil(h / s) + 1;
+        const pal = [`rgba(${INK},0.34)`, `rgba(${ACCENT},0.3)`, 'rgba(58,90,122,0.32)'];
+        // pre-generate shared edges so adjacent tiles agree
+        const vEdge = [], hEdge = [];
+        for (let y = 0; y <= rows; y++) {
+          vEdge[y] = []; hEdge[y] = [];
+          for (let x = 0; x <= cols; x++) { vEdge[y][x] = Math.floor(rnd() * pal.length); hEdge[y][x] = Math.floor(rnd() * pal.length); }
+        }
+        ctx.lineWidth = 1.4;
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            const px = x * s, py = y * s, c = s / 2;
+            const edges = [
+              [hEdge[y][x], px + c, py],       // top
+              [vEdge[y][x + 1], px + s, py + c],     // right
+              [hEdge[y + 1][x], px + c, py + s],     // bottom
+              [vEdge[y][x], px, py + c]      // left
+            ];
+            edges.forEach(([col, ex, ey]) => {
+              ctx.strokeStyle = pal[col];
+              ctx.beginPath();
+              ctx.moveTo(px + c, py + c);
+              ctx.lineTo(ex, ey);
+              ctx.stroke();
+            });
+          }
+        }
+      }
+
+      // --- 3. Voronoi: cell boundaries only, found by nearest-seed sampling
+      function voronoi(ctx, w, h, rnd) {
+        const n = 16, pts = [];
+        for (let i = 0; i < n; i++) pts.push({ x: rnd() * w, y: rnd() * h });
+        const nearest = (x, y) => {
+          let best = 0, bd = Infinity;
+          for (let i = 0; i < n; i++) {
+            const dx = pts[i].x - x, dy = pts[i].y - y, d = dx * dx + dy * dy;
+            if (d < bd) { bd = d; best = i; }
+          }
+          return best;
+        };
+        const step = 3;
+        ctx.fillStyle = `rgba(${INK},0.34)`;
+        for (let y = 0; y < h; y += step) {
+          for (let x = 0; x < w; x += step) {
+            const c = nearest(x, y);
+            if (c !== nearest(x + step, y) || c !== nearest(x, y + step)) {
+              ctx.fillRect(x, y, 1.4, 1.4);
+            }
+          }
+        }
+        ctx.fillStyle = `rgba(${ACCENT},0.5)`;
+        pts.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI * 2); ctx.fill(); });
+      }
+
+      // --- 4. Circle packing: greedy non-overlapping placement
+      function packing(ctx, w, h, rnd) {
+        const circles = [];
+        const maxR = 26, minR = 3;
+        let attempts = 0;
+        while (circles.length < 90 && attempts < 3000) {
+          attempts++;
+          const x = rnd() * w, y = rnd() * h;
+          let r = maxR;
+          for (const c of circles) {
+            const d = Math.hypot(c.x - x, c.y - y) - c.r - 2;
+            if (d < r) r = d;
+            if (r < minR) break;
+          }
+          if (r >= minR) circles.push({ x, y, r });
+        }
+        ctx.lineWidth = 1;
+        circles.forEach((c, i) => {
+          ctx.strokeStyle = `rgba(${i % 9 === 0 ? ACCENT : INK},0.34)`;
+          ctx.beginPath();
+          ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+          ctx.stroke();
+        });
+      }
+
+      // --- 5. Recursive subdivision, Mondrian style
+      function subdivision(ctx, w, h, rnd) {
+        ctx.lineWidth = 1;
+        (function split(x, y, ww, hh, depth) {
+          if (depth > 4 || ww < 26 || hh < 26) {
+            ctx.strokeStyle = `rgba(${INK},0.3)`;
+            ctx.strokeRect(x, y, ww, hh);
+            if (rnd() < 0.14) {
+              ctx.fillStyle = `rgba(${rnd() < 0.4 ? ACCENT : INK},0.13)`;
+              ctx.fillRect(x, y, ww, hh);
+            }
+            return;
+          }
+          const vertical = ww > hh ? rnd() < 0.75 : rnd() < 0.25;
+          const t = 0.3 + rnd() * 0.4;
+          if (vertical) {
+            split(x, y, ww * t, hh, depth + 1);
+            split(x + ww * t, y, ww * (1 - t), hh, depth + 1);
+          } else {
+            split(x, y, ww, hh * t, depth + 1);
+            split(x, y + hh * t, ww, hh * (1 - t), depth + 1);
+          }
+        })(0, 0, w, h, 0);
+      }
+
+      // --- 6. Penrose P3: rhombus substitution from a 10-triangle wheel
+      function penrose(ctx, w, h, rnd) {
+        const PSI = 1 / ((1 + Math.sqrt(5)) / 2);
+        const sub = (a, b) => ({ x: a.x - b.x, y: a.y - b.y });
+        const add = (a, b) => ({ x: a.x + b.x, y: a.y + b.y });
+        const scale = (a, k) => ({ x: a.x * k, y: a.y * k });
+
+        const r = Math.max(w, h) * 0.78;
+        const cx = w / 2 + (rnd() - 0.5) * w * 0.3, cy = h / 2 + (rnd() - 0.5) * h * 0.3;
+        let tris = [];
+        for (let i = 0; i < 10; i++) {
+          let B = { x: cx + r * Math.cos((2 * i - 1) * Math.PI / 10), y: cy + r * Math.sin((2 * i - 1) * Math.PI / 10) };
+          let C = { x: cx + r * Math.cos((2 * i + 1) * Math.PI / 10), y: cy + r * Math.sin((2 * i + 1) * Math.PI / 10) };
+          if (i % 2 === 0) { const t = B; B = C; C = t; }
+          tris.push([0, { x: cx, y: cy }, B, C]);
+        }
+        for (let gen = 0; gen < 5; gen++) {
+          const next = [];
+          for (const [color, A, B, C] of tris) {
+            if (color === 0) {
+              const P = add(A, scale(sub(B, A), PSI));
+              next.push([0, C, P, B], [1, P, C, A]);
+            } else {
+              const Q = add(B, scale(sub(A, B), PSI));
+              const R = add(B, scale(sub(C, B), PSI));
+              next.push([1, R, C, A], [1, Q, R, B], [0, R, Q, A]);
+            }
+          }
+          tris = next;
+        }
+        ctx.lineWidth = 0.8;
+        for (const [color, A, B, C] of tris) {
+          ctx.strokeStyle = color === 0 ? `rgba(${INK},0.3)` : `rgba(${ACCENT},0.22)`;
+          ctx.beginPath();
+          ctx.moveTo(A.x, A.y);
+          ctx.lineTo(B.x, B.y);
+          ctx.lineTo(C.x, C.y);
+          ctx.stroke();
+        }
+      }
+
+      const TILINGS = [
+        { name: 'TRUCHET TILING', fn: truchet },
+        { name: 'WANG TILING', fn: wang },
+        { name: 'VORONOI TESSELLATION', fn: voronoi },
+        { name: 'CIRCLE PACKING', fn: packing },
+        { name: 'RECURSIVE SUBDIVISION', fn: subdivision },
+        { name: 'PENROSE P3', fn: penrose }
+      ];
+
+      // Assigned round-robin across the grid so no two neighbouring cards share a
+      // pattern and all six algorithms are always visible. The *seed* still comes
+      // from the project key, so each card's instance of a pattern is its own.
+      function tilingFor(index) {
+        return TILINGS[index % TILINGS.length];
+      }
+
+      function paintCard(canvas, key, tiling) {
+        const w = canvas.clientWidth, h = canvas.clientHeight;
+        if (!w || !h) return;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        const ctx = canvas.getContext('2d');
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+        tiling.fn(ctx, w, h, seedRand(key));
+      }
+
+      const grid = document.getElementById('projGrid');
+      PROJECTS.forEach((p, index) => {
+        const tiling = tilingFor(index);
+        const card = document.createElement('div');
+        card.className = 'proj-card';
+        card.innerHTML = `
+      <canvas class="proj-bg"></canvas>
+      <div class="proj-inner">
+        <div>
+          <div class="proj-top">
+            <span class="proj-hash">${hashId(p.key)}</span>
+            <span class="proj-algo">${tiling.name}</span>
+          </div>
+          <div class="proj-name">${p.name}</div>
+          ${p.status ? `<div class="proj-status">${p.status}</div>` : ''}
+          <div class="proj-desc">${p.desc}</div>
+        </div>
+        <div>
+          <div class="proj-tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>
+          <div class="proj-open">Open detail</div>
+        </div>
+      </div>
+    `;
+        card.addEventListener('click', () => openModal(p));
+        grid.appendChild(card);
+
+        const canvas = card.querySelector('.proj-bg');
+        requestAnimationFrame(() => paintCard(canvas, p.key, tiling));
+        if (window.ResizeObserver) {
+          let raf;
+          new ResizeObserver(() => {
+            cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(() => paintCard(canvas, p.key, tiling));
+          }).observe(card);
+        }
+      });
+
+
+      const overlay = document.getElementById('projectModal');
+      const box = document.getElementById('modalBox');
+      const content = document.getElementById('modalContent');
+
+      function openModal(p) {
+        let h = `<div class="modal-header">
+      <div class="modal-hash">${hashId(p.key)}</div>
+      <div class="modal-name">${p.name}</div>
+      ${p.status ? `<div class="proj-status">${p.status}</div>` : ''}
+      <div class="modal-tagline">${p.tagline}</div>
+    </div><div class="modal-body">`;
+        h += `<div class="modal-section"><div class="modal-section-title">What it does</div><ul class="modal-list">`;
+        p.features.forEach(f => h += `<li>${f}</li>`);
+        h += `</ul></div>`;
+        if (p.arch) {
+          h += `<div class="modal-section"><div class="modal-section-title">Architecture</div>
+      <div class="modal-arch-box">${p.arch}</div></div>`;
+        }
+        h += `<div class="modal-section"><div class="modal-section-title">Stack</div><div class="modal-stack">`;
+        p.tags.forEach(t => h += `<span class="modal-stack-tag">${t}</span>`);
+        h += `</div></div>`;
+        p.links.forEach(l => h += `<a class="modal-cta" href="${l.url}" target="_blank" rel="noopener">${l.label} →</a> `);
+        h += `</div>`;
+        content.innerHTML = h;
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+    })();
+  </script>
+</body>
+
+</html>
