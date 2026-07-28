@@ -958,17 +958,17 @@
         <div class="eyebrow">TRANSMIT —</div>
         <h2>Say <em>hello</em></h2>
       </div>
-      <a class="contact-block" href="mailto:kshitijmishra231@gmail.com">
+      <a class="contact-block" href="mailto:kshitijmishra7@outlook.com">
         <span class="contact-label">Email</span>
-        <span class="contact-val">kshitijmishra231@gmail.com</span>
+        <span class="contact-val">kshitijmishra7@outlook.com</span>
       </a>
-      <a class="contact-block" href="https://github.com/Kshitijmishradev" target="_blank" rel="noopener">
+      <a class="contact-block" href="https://github.com/codekshitij" target="_blank" rel="noopener">
         <span class="contact-label">GitHub</span>
-        <span class="contact-val">github.com/Kshitijmishradev</span>
+        <span class="contact-val">@codekshitij</span>
       </a>
-      <a class="contact-block" href="https://www.linkedin.com/in/kshitijmish/" target="_blank" rel="noopener">
+      <a class="contact-block" href="https://www.linkedin.com/in/kshitij27/" target="_blank" rel="noopener">
         <span class="contact-label">LinkedIn</span>
-        <span class="contact-val">/in/kshitijmish</span>
+        <span class="contact-val">/in/kshitij27</span>
       </a>
     </div>
   </section>
@@ -977,9 +977,9 @@
     <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; width:100%;">
       <span>KSHITIJ MISHRA — BUILT WITH SEEDED RANDOMNESS.</span>
       <span>
-        <a href="https://github.com/Kshitijmishradev" target="_blank" rel="noopener">GH</a> ·
-        <a href="https://www.linkedin.com/in/kshitijmish/" target="_blank" rel="noopener">LI</a> ·
-        <a href="mailto:kshitijmishra231@gmail.com">EM</a>
+        <a href="https://github.com/codekshitij" target="_blank" rel="noopener">GH</a> ·
+        <a href="https://www.linkedin.com/in/kshitij27/" target="_blank" rel="noopener">LI</a> ·
+        <a href="mailto:kshitijmishra7@outlook.com">EM</a>
       </span>
     </div>
   </footer>
@@ -1111,17 +1111,18 @@
         },
         {
           key: 'toshi', name: 'Tōshi',
-          desc: 'Live SEC EDGAR question answering with cited risk and financial analysis.',
-          tags: ['MCP', 'CHROMADB', 'PYTHON'],
-          tagline: 'MCP server connecting Claude to SEC EDGAR — financial data, risk scoring, and RAG over 10-K filings.',
+          desc: 'A multi-stage financial intelligence pipeline over SEC filings — structured data extraction, quantitative risk scoring, and a retrieval system with four compounding accuracy layers.',
+          tags: ['MCP', 'PYTHON', 'CHROMADB', 'SENTENCE-TRANSFORMERS'],
+          tagline: 'Most SEC chatbots are a vector store with a prompt on top. Tōshi is a pipeline: structured XBRL extraction, anomaly detection, a proprietary risk model, and a four-stage retrieval chain — each stage correcting the one before it.',
           features: [
-            'Pull financial data directly from SEC filings — revenue, net income, cash flow, debt, EPS — up to 10 years',
-            'Anomaly detection flags unusual year-over-year changes with severity levels',
-            'Proprietary 0–10 risk score across 5 financial dimensions',
-            'RAG pipeline over 10-K filings: HyDE query expansion, MMR diverse retrieval, CRAG self-correction, cross-encoder reranking',
-            'Every answer cited with company, year, and filing section — no hallucinations'
+            'Stage 1 — Structured extraction: pulls XBRL financial data directly from SEC EDGAR (revenue, net income, cash flow, debt, EPS) for up to 10 fiscal years per company — no scraping, typed structured data',
+            'Stage 2 — Anomaly detection: flags statistically unusual year-over-year changes with severity classification, surfaced before any question is even asked',
+            'Stage 3 — Quantitative risk model: produces a proprietary 0–10 composite risk score across 5 financial dimensions, computed from the structured data — not inferred by the LLM',
+            'Stage 4 — Retrieval chain (four compounding layers): HyDE expands the query before retrieval; MMR diverse retrieval prevents redundant chunks; CRAG self-critique detects and replaces irrelevant retrieved context; cross-encoder reranking reorders the surviving chunks by actual relevance',
+            'Every answer is cited to the company, fiscal year, and specific filing section — hallucination is structurally prevented because the LLM only sees grounded, reranked context',
+            'Exposed as an MCP server so any compatible client (Claude Desktop, Cursor) can use it as a first-class tool without a separate UI'
           ],
-          arch: 'Question → HyDE Expansion → ChromaDB Retrieval (MMR) → CRAG Self-Critique → Cross-Encoder Reranking → Claude Answers with Citations',
+          arch: 'Query → HyDE Expansion → ChromaDB (MMR) → CRAG Self-Critique → Cross-Encoder Reranking → LLM + Structured XBRL Layer → Risk Score + Cited Answer',
           links: [{ label: 'OPEN', url: 'https://codekshitij.github.io/Toshi/' }]
         },
         {
